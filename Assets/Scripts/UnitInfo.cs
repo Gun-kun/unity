@@ -3,31 +3,42 @@ using System.Collections;
 
 //{}
 
-[RequireComponent(typeof(CircleCollider2D))]
+//[RequireComponent(typeof(CircleCollider2D))]
 
 public class UnitInfo : MonoBehaviour {
 
-	public string Name;
+	public int UnitID;
+	public string UnitName;
 	public int FriendFoe;		//1 allied 2 enemy 3 orb 4 pushable obstacle 5 solid obstacle
 	public int Level;
+
 	public int Weight; 			//to push and get pushed
 	public int Range;			//attack range
 	public int Speed; 			//movement allowed
+
 	public int Action; 			//cooldown-warmup
+
 	public int maxHp;
 	public int curHp;
+
 	public int Atk;
 	public int Def;
+	public int MAtk;
+	public int MDef;
+
 	//damage reductions
 	public int RFire;
 	public int RIce;
 	public int RThunder;
+
 	//status resist
 	public int RStunned;
 	public int RBlocked;
 	public int RSilenced;
 
-	//public float a,b;
+	//skills
+
+	//buffs
 
 	// Use this for initialization
 	void Start () {

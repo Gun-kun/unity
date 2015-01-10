@@ -10,12 +10,15 @@ public class DragnDrop3 : MonoBehaviour {
 	public float knockback=0.02f;		//knockback on collision
 	public float MovementAllowed;		//max movement allowed in a turn for the unit on turn
 
+	private GameObject otherguy;
+	private Vector3 othePos;			//position of the other collider of a collision
+	private int otheFriend;				//type of collider: 1 allied 2 enemy 3 orb 4 pushable obstacle 5 solid obstacle
+	private int otherWeight;			//weight of the collider
+	private float pushdistance;
 	private float limx = 19f;			//battlefield border x
 	private float limy = 10f;			//battlefield border y
 	private Vector3 curScreenPoint;		//coordinates of mouse on screen
 	private Vector3 curPosition;		//next position to move towards
-	private Vector3 othePos;			//position of the other collider of a collision
-	private int otheFriend;				//type of collider: 1 allied 2 enemy 3 orb 4 pushable obstacle 5 solid obstacle
 	private Vector3 moveDirection;		//knockback direction
 	private Vector3 screenPoint;		//z
 	private Vector3 offset;				//starting position
@@ -76,12 +79,14 @@ public class DragnDrop3 : MonoBehaviour {
 			moveDirection.Normalize ();
 			transform.Translate(moveDirection*(-knockback));
 
-			//!! doesn't check multiple obstacles
-			//to do
-
 			//apply push on allies
-			if (otheFriend==1 || otheFriend ==3 || otheFriend==4){
-				other.gameObject.transform.Translate(moveDirection*10);
+			if (otheFriend==1){
+				pushdistance=1+((gameObject.GetComponent<UnitInfo>().Weight)/otherWeight);
+				otherguy.transform.Translate(moveDirection*pushdistance);
+				MovementAllowed-=pushdistance;
+
+				//check pushed position valid
+				//to do
 			}
 
 		}
@@ -115,10 +120,13 @@ public class DragnDrop3 : MonoBehaviour {
 	//=========================================================================================
 	void OnTriggerEnter2D( Collider2D other )
 	{
+		//stops the drag input
 		isDrag = false;
 		isTouch = true;
 		othePos = other.transform.position;
-		otheFriend = other.gameObject.GetComponent<EnemyInfo> ().FriendFoe;
+		otherguy = other.gameObject;
+		otheFriend= other.gameObject.GetComponent<UnitInfo> ().FriendFoe;
+		otherWeight= otherguy.GetComponent<UnitInfo>().Weight;
 		
 		//if allied or pushable obstacle set flags for push
 		//to do
@@ -130,9 +138,25 @@ public class DragnDrop3 : MonoBehaviour {
 		//check user skill activation
 		//to do
 	}
+
+	void OnTriggerStay2D( Collider2D other )
+	{
+		//stops the drag input
+		isDrag = false;
+		isTouch = true;
+		
+		//check target skill activation
+		//to do
+		other.gameObject.SendMessage ("MessageHere"); //sample
+		
+		//check user skill activation
+		//to do
+	}
+
 	void OnTriggerExit2D( Collider2D other )
 	{
-		isDrag = true;
+		//keeps the drag input stopped
+		//isDrag = true;
 		isTouch = false;
 		
 		//check target skill activation
